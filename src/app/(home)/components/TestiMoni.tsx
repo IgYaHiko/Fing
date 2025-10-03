@@ -11,7 +11,7 @@ const TestiMoni = () => {
         </div>
 
         <div className='mt-5' >
-            <h1 style={{fontFamily: "poppins"}} className='font-bold text-center text-5xl md:text-6xl capitalize'>What our <span className='text-5xl md:text-7xl font-extrabold dark:text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 glow-gradient animate-gradientShift'>User</span> says 🚀</h1>
+            <h1 style={{fontFamily: "var(--font-montserrat-alternates)"}} className='font-bold text-center text-5xl md:text-6xl capitalize'>What our <span className='text-5xl md:text-7xl font-extrabold dark:text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 glow-gradient animate-gradientShift'>User</span> says 🚀</h1>
         </div>
 
         <div className='text-xl mt-2 font-mono'>

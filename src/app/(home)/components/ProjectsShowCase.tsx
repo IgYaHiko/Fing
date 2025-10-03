@@ -23,7 +23,7 @@ const ProjectsShowCase = () => {
         <div>
           <h1
             className="text-center text-4xl md:text-8xl font-bold"
-            style={{ fontFamily: 'poppins' }}
+            style={{ fontFamily: 'var(--font-montserrat-alternates)' }}
           >
             {user?.firstName}&apos;s{' '}
             <span className="text-5xl md:text-8xl font-extrabold dark:text-transparent bg-clip-text dark:bg-gradient-to-r from-pink-500 via-purple-400 to-pink-500 glow-gradient animate-gradientShift">

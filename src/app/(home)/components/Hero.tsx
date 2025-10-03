@@ -106,8 +106,8 @@ const Hero: React.FC<HeroProps> = () => {
         </div>
 
         <div className="flex items-center mt-4 px-2 md:px-0 flex-col text-center">
-          <h1 className="text-3xl md:text-8xl font-bold" style={{ fontFamily: 'poppins' }}>
-            <span className="text-5xl md:text-8xl font-extrabold dark:text-transparent bg-clip-text dark:bg-gradient-to-r from-pink-500 via-purple-400 to-pink-500 glow-gradient animate-gradientShift">
+          <h1 className="text-3xl md:text-7xl font-bold" style={{ fontFamily: 'var(--font-montserrat-alternates)' }}>
+            <span className="text-5xl md:text-7xl font-extrabold dark:text-transparent bg-clip-text dark:bg-gradient-to-r from-pink-500 via-purple-400 to-pink-500 glow-gradient animate-gradientShift">
               FingAI.
                <style>
         {`
@@ -137,7 +137,7 @@ const Hero: React.FC<HeroProps> = () => {
             </span>{' '}
             ships it  anyway
           </h1>
-          <h1 className="text-2xl md:text-7xl mt-2 font-bold" style={{ fontFamily: 'poppins' }}>
+          <h1 className="text-xl md:text-5xl mt-2 font-bold" style={{ fontFamily: 'var(--font-montserrat-alternates)' }}>
             {text}|
           </h1>
           <p className="text-xs md:text-md mt-5" style={{ fontFamily: 'monospace' }}>
