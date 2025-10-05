@@ -31,7 +31,7 @@ const ProductShowCase = () => {
           </button>
         </div>
 
-        <div className='flex text-3xl md:text-7xl font-bold mt-1 md:mt-2 flex-col items-center'>
+        <div className='flex text-3xl md:text-7xl font-bold mt-1 md:mt-2 flex-col items-center' style={{fontFamily: 'var(--font-montserrat-alternates)'}}>
           <h1>A more efficient way</h1>
           <h1>
             <div className='flex items-center gap-2'>

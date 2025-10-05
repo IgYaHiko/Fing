@@ -573,6 +573,8 @@ const handleSendMessage = async (e: React.FormEvent) => {
     }
   };
 
+  
+
   const exportChat = () => {
     const chatData = {
       messages,

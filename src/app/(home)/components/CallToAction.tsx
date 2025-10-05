@@ -21,7 +21,7 @@ const CallToAction = () => {
     <section ref={sectionRef} className='py-10 md:py-52 '>
       <div className='container mx-auto relative'>
         <div>
-          <h1 className='text-center text-4xl md:text-7xl font-bold' style={{ fontFamily: 'poppins' }}>
+          <h1 className='text-center text-4xl md:text-7xl font-bold' style={{ fontFamily: 'var(--font-montserrat-alternates)' }}>
             Sign up for free today
           </h1>
           <p className='text-center mt-2 font-mono'>

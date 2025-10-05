@@ -19,7 +19,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
         <div className='flex items-center justify-between'>
              <div className='flex items-center gap-1' > 
             <Image alt='' className='w-10 h-10' src={logos.logo7} />
-            <span className='font-bold text-xl' style={{fontFamily: 'poppins'}} >FingAI.</span>
+            <span className='font-bold text-xl' style={{fontFamily: 'var(--font-montserrat-alternates)'}} >FingAI.</span>
          </div>
          <div onClick={() => navigate.push('/')} className='absolute -right-56 md:-right-135 p-2 bg-white top-4 rounded-full'>
             <ArrowLeft  className='text-black' size={19} />

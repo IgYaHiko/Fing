@@ -25,7 +25,7 @@ const Page = () => {
 
           <div
             className='text-center text-3xl md:text-6xl font-bold'
-            style={{ fontFamily: 'poppins' }}
+            style={{ fontFamily: 'var(--font-montserrat-alternates)' }}
           >
             <h1>
               Find the{' '}

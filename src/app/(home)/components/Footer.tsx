@@ -22,7 +22,7 @@ const Footer = () => {
                   alt='logo'
                   src={logos.logo7}
                 />
-                <h1 className='text-3xl font-bold text-black dark:text-white' style={{ fontFamily: 'poppins' }}>
+                <h1 className='text-3xl font-bold text-black dark:text-white' style={{ fontFamily: 'var(--font-montserrat-alternates)' }}>
                   FingAI.
                 </h1>
               </div>
