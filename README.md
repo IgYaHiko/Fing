@@ -1,3 +1,28 @@
+# 🎃 Hacktoberfest 2025 — Contribute to FingAI!
+
+We’re excited to open **FingAI** for Hacktoberfest contributions!  
+Help us build smarter, faster, and more efficient AI-powered web experiences.
+## How to Contribute
+1. Fork this repo
+2. Create a new branch: `git checkout -b your-branch-name`
+3. Make your changes
+4. Commit: `git commit -m "Added new feature"`
+5. Push: `git push origin your-branch-name`
+6. Submit a pull request 🚀
+
+### Rules
+- PRs should have meaningful changes (no spam)
+- Follow the code style used in the repo
+- One issue per PR
+### Commit Message Convention
+feat: add new AI component
+fix: resolve mobile layout issue
+docs: update contribution guide
+style: format code with prettier
+refactor: improve component structure
+test: add unit tests for utils
+
+
 # 🚀 FingAI — Build Smarter, Launch Faster
 
 FingAI is a modern AI-powered SaaS website builder designed to streamline your web development process with intelligent design automation and real-time optimization. Whether you're a developer, startup, or designer, FingAI helps you go from idea to launch — effortlessly.
