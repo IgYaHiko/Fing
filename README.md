@@ -15,12 +15,12 @@ Help us build smarter, faster, and more efficient AI-powered web experiences.
 - Follow the code style used in the repo
 - One issue per PR
 ### Commit Message Convention
-### feat: add new AI component
-### fix: resolve mobile layout issue
-### docs: update contribution guide
-### style: format code with prettier
-### refactor: improve component structure
-### test: add unit tests for utils
+- feat: add new AI component
+- fix: resolve mobile layout issue
+- docs: update contribution guide
+- style: format code with prettier
+- refactor: improve component structure
+-  test: add unit tests for utils
 
 
 # 🚀 FingAI — Build Smarter, Launch Faster
