@@ -348,13 +348,13 @@ function detectIncompletePatterns(line: string, column: number): string[] {
   return patterns;
 }
 // Rename unused function
-function _getLastNonEmptyLine(lines: string[], currentLine: number): string {
+/* function _getLastNonEmptyLine(lines: string[], currentLine: number): string {
   for (let i = currentLine - 1; i >= 0; i--) {
     const line = lines[i];
     if (line.trim() !== "") return line;
   }
   return "";
-}
+} */
 
 // Add CORS headers if needed for development
 export async function OPTIONS() {

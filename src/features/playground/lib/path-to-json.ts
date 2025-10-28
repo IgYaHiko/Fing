@@ -241,7 +241,7 @@ export async function saveTemplateStructureToJson(
       outputPath, 
       JSON.stringify(templateStructure, null, 2),
       'utf8'
-    );
+    ); 
     console.log(`Template structure saved to ${outputPath}`);
 
 

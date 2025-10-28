@@ -44,7 +44,7 @@ const CallToAction = () => {
           </Button>
           <Button variant='outline'>Learn More</Button>
         </div>
-
+ 
         {/* Parallax Images */}
         <motion.img
           src={IMAES?.Spring?.src}

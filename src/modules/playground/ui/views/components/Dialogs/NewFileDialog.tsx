@@ -2,7 +2,7 @@
 import React from 'react'
 import { FileDialogProps } from '../../types/types'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Code2, Edit, FilePlus, Plus } from 'lucide-react';
+import { Code2, FilePlus, Plus } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import GradientButton from '@/components/Custombuttons/GradientButton';
