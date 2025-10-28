@@ -12,8 +12,6 @@ import NewFileDialog from './Dialogs/NewFileDialog'
 import NewFolderDialog from './Dialogs/NewFolderDialog'
 import RenameFileDialog from './Dialogs/RenameFIleDialog'
 
-
-
 const TemplateTreeNode: React.FC<TemplateTreeNodeProps> = ({
   item,
   level = 0,
@@ -27,249 +25,211 @@ const TemplateTreeNode: React.FC<TemplateTreeNodeProps> = ({
   onRenameFile,
   onRenameFolder
 }) => {
-
   const isValidItem = item && typeof item === 'object'
   const isFolder = isValidItem && "folderName" in item
 
-  const [isOpen, setIsOpen] = useState<boolean>(level < 2) // open first few levels
-  const [isNewFileDialogOpen, setIsNewFileDialogOpen] = React.useState(false)
-  const [isNewFolderDialogOpen, setIsNewFolderDialogOpen] = React.useState(false);
-  const [isRenameFolderDialogOpen,setIsRenameFolderDialogOpen] = React.useState(false)
-  const [isRenameFileDialog, setIsRenameFileDialog] = React.useState(false);
-  
-
-  /* const handleRenameSubmit = () => {
-
-  } */
+  const [isOpen, setIsOpen] = useState<boolean>(level < 2)
+  const [isNewFileDialogOpen, setIsNewFileDialogOpen] = useState(false)
+  const [isNewFolderDialogOpen, setIsNewFolderDialogOpen] = useState(false)
+  const [isRenameFolderDialogOpen, setIsRenameFolderDialogOpen] = useState(false)
+  const [isRenameFileDialog, setIsRenameFileDialog] = useState(false)
 
   const openRenameFolderDialog = () => {
-     setIsRenameFolderDialogOpen(true)
+    setIsRenameFolderDialogOpen(true)
   }
 
   const openRenameFileDialog = () => {
-      setIsRenameFileDialog(true)
+    setIsRenameFileDialog(true)
   }
-   if (!isValidItem) return null
+
+  if (!isValidItem) return null
 
   if (!isFolder) {
-  const file = item as TemplateFile;
-  const fileName = `${file.filename}.${file.fileExtension}`;
-  const isSelected = selectedFiles && selectedFiles.filename === file.filename && selectedFiles.fileExtension === file.fileExtension;
-  const [isRenaming, setIsRenaming] = useState(false);
-  const [newName, setNewName] = useState(fileName);
+    const file = item as TemplateFile
+    const fileName = `${file.filename}.${file.fileExtension}`
+    const isSelected = selectedFiles && selectedFiles.filename === file.filename && selectedFiles.fileExtension === file.fileExtension
 
-   const handleRenameSubmit = () => {
-    if (newName.trim() && newName !== fileName) {
-      const [filename, ...extParts] = newName.split('.');
-      const fileExtension = extParts.join('.');
-      onRenameFile?.(file, filename, fileExtension, path);
+    const handleDelete = () => {
+      onDeleteFile?.(file, path)
     }
-    setIsRenaming(false);
-  };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleRenameSubmit();
-    } else if (e.key === 'Escape') {
-      setIsRenaming(false);
-      setNewName(fileName);
+    const handleRenameFile = (
+      newFileName: string,
+      newFileExtension: string,
+    ) => {
+      onRenameFile?.(file, newFileName, newFileExtension, path)
+      setIsRenameFileDialog(false)
     }
-  };
 
-  
-const handleDelete = () => {
-   onDeleteFile?.(file, path)
-   
-}
+    return (
+      <SidebarMenuItem>
+        <div className="flex items-center group">
+          <SidebarMenuButton 
+            isActive={isSelected} 
+            onClick={() => onFileSelect?.(file)} 
+            className="flex-1"
+          >
+            <File className="h-4 w-4 mr-2 shrink-0" />
+            <span>{fileName}</span>
+          </SidebarMenuButton>
 
-const handleRenameFile = (
-  newFileName: string,
-  newFileExtension: string,
-) => {
-   onRenameFile?.(file,newFileName,newFileExtension ,path)
-   setIsNewFileDialogOpen(false)
-}
-  return (
-    <SidebarMenuItem>
-      <div className="flex items-center group">
-        <>
-            <SidebarMenuButton 
-              isActive={isSelected} 
-              onClick={() => onFileSelect?.(file)} 
-              className="flex-1"
-            >
-              <File className="h-4 w-4 mr-2 shrink-0" />
-              <span>{fileName}</span>
-            </SidebarMenuButton>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                <MoreHorizontal className="h-3 w-3" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={openRenameFileDialog}>
+                <Edit3 className="h-4 w-4 mr-2" />
+                Rename
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleDelete} className="text-destructive">
+                <Trash2 className="h-4 w-4 mr-2" />
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                >
-                  <MoreHorizontal className="h-3 w-3" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem 
-                 onClick={openRenameFileDialog}
-                >
-                  <Edit3 className="h-4 w-4 mr-2" />
-                  Rename
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleDelete} className="text-destructive">
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </>
-      </div>
-
-      <RenameFileDialog
-       isOpen={isRenameFileDialog}
-       currentFileName={file.filename}
-       currentExtension={file.fileExtension}
-       onClose={() => setIsRenameFileDialog(false)}
-       onRename={handleRenameFile}
-      />
-    </SidebarMenuItem>
-  );
-} else {
+        <RenameFileDialog
+          isOpen={isRenameFileDialog}
+          currentFileName={file.filename}
+          currentExtension={file.fileExtension}
+          onClose={() => setIsRenameFileDialog(false)}
+          onRename={handleRenameFile}
+        />
+      </SidebarMenuItem>
+    )
+  } else {
     const folder = item as TemplateFolder
     const folderName = folder.folderName
     const currentPath = path ? `${path}/${folderName}` : folderName
-    const handleDeleteFolder = () => {
-       onDeleteFolder?.(folder, path)
 
+    const handleDeleteFolder = () => {
+      onDeleteFolder?.(folder, path)
     }
+
     const createFile = (filename: string, extension: string) => {
-       if(onAddFile) {
-         const newFile: TemplateFile = {
-            filename,
-            fileExtension: extension,
-            content: ""
-         }
-          onAddFile(newFile, currentPath)
-       }
-       setIsNewFileDialogOpen(false)
+      if (onAddFile) {
+        const newFile: TemplateFile = {
+          filename,
+          fileExtension: extension,
+          content: ""
+        }
+        onAddFile(newFile, currentPath)
+      }
+      setIsNewFileDialogOpen(false)
     }
-     const handleCreateFolder = (folder: string) => {
+
+    const handleCreateFolder = (folderName: string) => {
       if (onAddFolder) {
         const newFolder: TemplateFolder = {
-          folderName: folder,
+          folderName: folderName,
           items: [],
-        };
-        onAddFolder(newFolder, currentPath);
+        }
+        onAddFolder(newFolder, currentPath)
       }
-      setIsNewFolderDialogOpen(false); // Close the NEW folder dialog
+      setIsNewFolderDialogOpen(false)
     }
 
-    const handelOnRename = (newFoldername: string) => {
-       onRenameFolder?.(folder,newFoldername, path);
-       setIsNewFolderDialogOpen(false)
-    }   
+    const handleOnRename = (newFolderName: string) => {
+      onRenameFolder?.(folder, newFolderName, path)
+      setIsRenameFolderDialogOpen(false)
+    }
+
     return (
-     <div>
+      <div>
+        <SidebarMenuItem>
+          <Collapsible
+            open={isOpen}
+            onOpenChange={setIsOpen}
+            className="group/collapsible [&[data-state=open]>div>button>svg:first-child]:rotate-90"
+          >
+            <div className="flex items-center group">
+              <CollapsibleTrigger asChild>
+                <SidebarMenuButton className="flex-1">
+                  <ChevronRight className="transition-transform" />
+                  <Folder className="h-4 w-4 mr-2 shrink-0 text-pink-800" />
+                  <span>{folderName}</span>
+                </SidebarMenuButton>
+              </CollapsibleTrigger>
 
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <MoreHorizontal className="h-3 w-3" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => setIsNewFileDialogOpen(true)}>
+                    <FilePlus className="h-4 w-4 mr-2" />
+                    New File
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setIsNewFolderDialogOpen(true)}>
+                    <FolderPlus className="h-4 w-4 mr-2" />
+                    New Folder
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={openRenameFolderDialog}>
+                    <Edit3 className="h-4 w-4 mr-2" />
+                    Rename
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={handleDeleteFolder}
+                    className="text-destructive"
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Delete
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
 
-         <SidebarMenuItem>
-        <Collapsible
-          open={isOpen}
-          onOpenChange={setIsOpen}
-          className="group/collapsible [&[data-state=open]>div>button>svg:first-child]:rotate-90"
-        >
-          <div className="flex items-center group">
-            <CollapsibleTrigger asChild>
-              <SidebarMenuButton className="flex-1">
-                <ChevronRight className="transition-transform" />
-                <Folder className="h-4 w-4 mr-2 shrink-0 text-pink-800" />
-                <span>{folderName}</span>
-              </SidebarMenuButton>
-            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <SidebarMenuSub>
+                {folder.items.map((childItem, index) => (
+                  <TemplateTreeNode
+                    key={index}
+                    item={childItem}
+                    onFileSelect={onFileSelect}
+                    selectedFiles={selectedFiles}
+                    level={level + 1}
+                    path={currentPath}
+                    onAddFile={onAddFile}
+                    onAddFolder={onAddFolder}
+                    onDeleteFile={onDeleteFile}
+                    onDeleteFolder={onDeleteFolder}
+                    onRenameFile={onRenameFile}
+                    onRenameFolder={onRenameFolder}
+                  />
+                ))}
+              </SidebarMenuSub>
+            </CollapsibleContent>
+          </Collapsible>
+        </SidebarMenuItem>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                >
-                  <MoreHorizontal className="h-3 w-3" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setIsNewFileDialogOpen(true)} >
-                  <FilePlus className="h-4 w-4 mr-2" />
-                  New File
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setIsNewFolderDialogOpen(true)} >
-                  <FolderPlus className="h-4 w-4 mr-2" />
-                  New Folder
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={openRenameFolderDialog} >
-                  <Edit3 className="h-4 w-4 mr-2" />
-                  Rename
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                 onClick={handleDeleteFolder}
-                 className="text-destructive">
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-
-          <CollapsibleContent>
-            <SidebarMenuSub>
-              {folder.items.map((childItem, index) => (
-                <TemplateTreeNode
-                  key={index}
-                  item={childItem}
-                  onFileSelect={onFileSelect}
-                  selectedFiles={selectedFiles}
-                  level={level + 1}
-                  path={currentPath}
-                  onAddFile={onAddFile}
-                  onAddFolder={onAddFolder}
-                  onDeleteFile={onDeleteFile}
-                  onDeleteFolder={onDeleteFolder}
-                  onRenameFile={onRenameFile}
-                  onRenameFolder={onRenameFolder}
-                />
-              ))}
-            </SidebarMenuSub>
-          </CollapsibleContent>
-        </Collapsible>
-
-       
-
-       
-
-     
-      </SidebarMenuItem>
-
-     
-           
-          <RenameFolderDialog
+        <RenameFolderDialog
           isOpen={isRenameFolderDialogOpen}
           currentFolderName={folder.folderName}
           onClose={() => setIsRenameFolderDialogOpen(false)}
-          onRename={handelOnRename}
-         
-         />
-           
+          onRename={handleOnRename}
+        />
 
         <NewFileDialog
-         isOpen={isNewFileDialogOpen}
-         onClose={() => setIsNewFileDialogOpen(false)}
-         onCreateFile={createFile}
+          isOpen={isNewFileDialogOpen}
+          onClose={() => setIsNewFileDialogOpen(false)}
+          onCreateFile={createFile}
         />
 
         <NewFolderDialog
@@ -277,17 +237,9 @@ const handleRenameFile = (
           onClose={() => setIsNewFolderDialogOpen(false)}
           onCreateFolder={handleCreateFolder}
         />
-     </div>
+      </div>
     )
-}
   }
-
-
+}
 
 export default TemplateTreeNode
-
-
-
-
-
-

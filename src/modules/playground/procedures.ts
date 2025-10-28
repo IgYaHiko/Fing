@@ -1,4 +1,4 @@
-
+'use server'
 import prisma from "@/lib/db";
 import { createTRPCRouter, protechedRoute } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
