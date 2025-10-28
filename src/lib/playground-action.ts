@@ -8,6 +8,11 @@ import prisma from '@/lib/db';
 const TEMPLATES = ["REACT", "NEXTJS", "EXPRESS", "HONO", "ANGULAR", "VUE"] as const;
 type Template = typeof TEMPLATES[number];
 
+// Helper function to validate template
+function isValidTemplate(template: string): template is Template {
+  return TEMPLATES.includes(template as Template);
+}
+
 export async function deleteProjectById(id: string) {
   const session = await auth();
   const userId = session.userId;
@@ -37,7 +42,7 @@ export async function editProjectById(
   updates: { 
     title?: string; 
     describtion?: string | null; 
-    template?: Template  // Use the specific Template type
+    template?: string // Accept string input
   }
 ) {
   const session = await auth();
@@ -59,7 +64,15 @@ export async function editProjectById(
   const dataToUpdate: any = {};
   if (updates.title !== undefined) dataToUpdate.title = updates.title;
   if (updates.describtion !== undefined) dataToUpdate.describtion = updates.describtion;
-  if (updates.template !== undefined) dataToUpdate.template = updates.template;
+  
+  // Validate and set template
+  if (updates.template !== undefined) {
+    if (isValidTemplate(updates.template)) {
+      dataToUpdate.template = updates.template;
+    } else {
+      throw new Error(`Invalid template: ${updates.template}`);
+    }
+  }
 
   const updatedProject = await prisma.playground.update({
     where: { id },
@@ -91,7 +104,7 @@ export async function duplicateProjectById(id: string) {
     data: {
       title: `${project.title} (Copy)`,
       describtion: project.describtion,
-      template: project.template as Template, // Cast to Template type
+      template: project.template, // This should already be the correct type from Prisma
       userId,
     },
   });

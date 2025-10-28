@@ -1,10 +1,11 @@
 "use client";
 import { useCallback, useState } from "react";
 import { useTRPC } from "@/trpc/client";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { TRPCError } from "@trpc/server";
 import { TemplateFolder } from "./types/tpyes";
+import { saveCode } from "@/lib/playground-action"; // Import server action
 
 interface PlayGroundData {
   id: string;
@@ -20,7 +21,7 @@ interface usePlayGroundReturn {
   loadPlayground: () => Promise<void>;
   saveTemplateData: (data: TemplateFolder | string) => Promise<void>;
   isSaving: boolean;
-  setTemplateData: (data: TemplateFolder) => void; // Added setter function
+  setTemplateData: (data: TemplateFolder) => void;
 }
 
 export const usePlayground = (id: string): usePlayGroundReturn => {
@@ -36,20 +37,7 @@ export const usePlayground = (id: string): usePlayGroundReturn => {
   const [template, setTemplate] = useState<TemplateFolder | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-
-  // ✅ Mutation for saving template
-  const saveCodeMutation = useMutation(trpc.playground.saveCode.mutationOptions({
-    onSuccess: () => {
-      toast.success("Template saved successfully");
-      queryClient.invalidateQueries({
-        queryKey: [["playground", { id }]],
-      });
-    },
-    onError: (err) => {
-      console.error("Failed to save template", err);
-      toast.error("Failed to save template");
-    },
-  }));
+  const [isSaving, setIsSaving] = useState(false);
 
   const loadPlayground = useCallback(async () => {
     if (!id) return;
@@ -110,6 +98,8 @@ export const usePlayground = (id: string): usePlayGroundReturn => {
       console.log('💾 saveTemplateData called with data type:', typeof data);
       
       try {
+        setIsSaving(true);
+        
         // If data is a TemplateFolder object, update local state immediately
         if (typeof data !== 'string') {
           setTemplate(data); // ✅ CRITICAL: Update local state for immediate UI update
@@ -121,19 +111,25 @@ export const usePlayground = (id: string): usePlayGroundReturn => {
         
         console.log('📦 Sending to backend, data length:', dataToSave.length);
         
-        await saveCodeMutation.mutateAsync({
-          playgroundId: id,
-          data: dataToSave,
+        // Use server action instead of tRPC mutation
+        await saveCode(id, dataToSave);
+        
+        // Manually invalidate queries to refresh data
+        queryClient.invalidateQueries({
+          queryKey: trpc.playground.getPlayground.queryOptions({ id }).queryKey,
         });
         
         console.log('✅ Backend save successful');
+        toast.success("Template saved successfully");
       } catch (error) {
         console.error('❌ Error in saveTemplateData:', error);
         toast.error('Failed to save changes');
         throw error;
+      } finally {
+        setIsSaving(false);
       }
     },
-    [id, saveCodeMutation]
+    [id, queryClient, trpc.playground.getPlayground]
   );
 
   // Expose setter function for external state updates
@@ -148,7 +144,7 @@ export const usePlayground = (id: string): usePlayGroundReturn => {
     error,
     loadPlayground,
     saveTemplateData,
-    isSaving: saveCodeMutation.isPending,
-    setTemplateData, // ✅ Expose the setter function
+    isSaving,
+    setTemplateData,
   };
 };
