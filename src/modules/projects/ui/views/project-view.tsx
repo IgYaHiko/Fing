@@ -14,19 +14,18 @@ import UserControl from '@/components/user-control'
 import CustomLoader from '@/components/loader/CustomLoader'
 import HeaderLoader from '@/components/loader/HeaderLoader'
 import { ErrorBoundary } from 'react-error-boundary'
-
 import MessageError from '@/components/Error/messageError'
 
 interface Props {
   projectId: string
 }
 
-// Model configuration constants
+// Updated Model configuration with working models
 const MODEL_OPTIONS = [
   { value: 'gpt-4.1', label: 'OpenAI GPT-4.1' },
   { value: 'gpt-4o', label: 'OpenAI GPT-4o' },
-  { value: 'gemini-1.5-flash', label: 'Gemini 1.5 Flash' },
-  { value: 'gemini-2.0-flash-lite', label: 'Gemini 2.0 Flash Lite' }
+  { value: 'gemini-1.5-pro', label: 'Gemini 1.5 Pro' },
+  { value: 'gemini-1.0-pro', label: 'Gemini 1.0 Pro' }
 ] as const;
 
 type ModelValue = typeof MODEL_OPTIONS[number]['value'];
@@ -36,16 +35,56 @@ const ProjectView = ({projectId}: Props) => {
   const [tabState, setTabState] = useState<"preview" | "code">("preview");
   const [selectedModel, setSelectedModel] = useState<ModelValue>('gpt-4.1');
 
-  // This wrapper ensures type safety while matching ProjectHeader's expected type
   const handleModelChange = (model: string) => {
-    // Validate the model is one of our options
     if (MODEL_OPTIONS.some(opt => opt.value === model)) {
       setSelectedModel(model as ModelValue);
     }
   };
 
-  // Helper function to get display name
- 
+  // Add fallback for when no fragment is selected
+  const renderPreviewContent = () => {
+    if (!activeFragment) {
+      return (
+        <div className="flex flex-col items-center justify-center h-full bg-muted/50 text-center p-8">
+          <div className="max-w-md">
+            <EyeIcon className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-semibold mb-2">No Preview Available</h3>
+            <p className="text-muted-foreground mb-4">
+              Generate a fragment by sending a message to see the preview here.
+            </p>
+            <p className="text-sm text-muted-foreground">
+              The sandbox will appear here once a fragment is created.
+            </p>
+          </div>
+        </div>
+      );
+    }
+    
+    return <FragmentView data={activeFragment} />;
+  };
+
+  // Add fallback for when no code is available
+  const renderCodeContent = () => {
+    if (!activeFragment?.files) {
+      return (
+        <div className="flex flex-col items-center justify-center h-full bg-muted/50 text-center p-8">
+          <div className="max-w-md">
+            <Braces className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-semibold mb-2">No Code Available</h3>
+            <p className="text-muted-foreground mb-4">
+              Generate a fragment by sending a message to see the code here.
+            </p>
+            <p className="text-sm text-muted-foreground">
+              The file explorer will show the generated code files once a fragment is created.
+            </p>
+          </div>
+        </div>
+      );
+    }
+    
+    return <FileExplorer files={activeFragment.files as {[path:string]:string}} />;
+  };
+
   return (
     <div className='h-screen'>
       <ResizablePanelGroup direction='horizontal'>
@@ -54,25 +93,23 @@ const ProjectView = ({projectId}: Props) => {
           minSize={25}
           className='flex flex-col min-h-0'
         >
-           <ErrorBoundary fallback={<MessageError/>}> 
+          <ErrorBoundary fallback={<MessageError/>}> 
             <Suspense fallback={<HeaderLoader/>}>
-            <ProjectHeader
-              projectId={projectId}
-              selectedModel={selectedModel}
-              setSelectedModel={handleModelChange}
-            />
-          </Suspense>
-         
-          
-         
+              <ProjectHeader
+                projectId={projectId}
+                selectedModel={selectedModel}
+                setSelectedModel={handleModelChange}
+              />
+            </Suspense>
+            
             <Suspense fallback={<CustomLoader/>}>
-            <MesssageContainer
-              activeFragment={activeFragment}
-              setActiveFragment={setActiveFragment}
-              projectId={projectId}
-              selectedModel={selectedModel}
-            />
-          </Suspense>
+              <MesssageContainer
+                activeFragment={activeFragment}
+                setActiveFragment={setActiveFragment}
+                projectId={projectId}
+                selectedModel={selectedModel}
+              />
+            </Suspense>
           </ErrorBoundary>
         </ResizablePanel>
         
@@ -114,14 +151,12 @@ const ProjectView = ({projectId}: Props) => {
               </div>
             </div>
             
-            <TabsContent className='-mt-2' value='preview'>
-              {activeFragment && <FragmentView data={activeFragment} />}
+            <TabsContent className='-mt-2 h-full' value='preview'>
+              {renderPreviewContent()}
             </TabsContent>
             
-            <TabsContent className='-mt-2 min-h-0' value='code'>
-              {activeFragment?.files && (
-                <FileExplorer files={activeFragment.files as {[path:string]:string}} />
-              )}
+            <TabsContent className='-mt-2 h-full' value='code'>
+              {renderCodeContent()}
             </TabsContent>
           </Tabs>
         </ResizablePanel>
